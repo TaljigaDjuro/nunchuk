@@ -148,7 +148,6 @@ static ssize_t nunchuk_read(struct file *filp, char *buffer, size_t length,
 	put_user(buf[1], buffer++);
 	put_user(z, buffer++);
 	put_user(c, buffer++);
-}
     return i;
 }
 
