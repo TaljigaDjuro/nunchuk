@@ -52,8 +52,10 @@ static int nunchuk_read_registers(struct i2c_client *client, u8 *buf,
 {
 	char sig = 0x00;
 	i2c_master_send(nunchuk_client, &sig, 1);
-	udelay(1);
 	i2c_master_recv(nunchuk_client, buf, 6);
+	
+	udelay(100);
+
 	return RET_SUCCESS;
 }
 
@@ -136,11 +138,16 @@ static ssize_t nunchuk_read(struct file *filp, char *buffer, size_t length,
 	int i = 0;
 	char buf[6];
 	nunchuk_read_registers(nunchuk_client, buf, 6);
-
-	for(; i < 6; i++) 
-	{	
-		printk(KERN_INFO "%d",  buf[i]);
-		//put_user(buf[i], buffer++);
+	char z,c;
+	z = c = buffer[5];
+	z = z & 1;
+	c = c & 2;
+	c = c >> 1;
+	printk(KERN_INFO "[%d %d %d %d]",  buf[0],buf[1],z,c);
+	put_user(buf[0], buffer++);
+	put_user(buf[1], buffer++);
+	put_user(z, buffer++);
+	put_user(c, buffer++);
 }
     return i;
 }
