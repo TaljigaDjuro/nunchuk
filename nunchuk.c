@@ -128,7 +128,9 @@ static int nunchuk_release(struct inode *inode, struct file *file)
 static ssize_t nunchuk_read(struct file *filp, char *buffer, size_t length, 
                            loff_t * offset)
 {
-	
+	char sig = 0x00;
+	i2c_master_send(nunchuk_client, &sig, 1);
+	udelay(1);
 	length = i2c_master_recv(nunchuk_client, input, 6);
 	put_user(input[0], buffer);	
     return length;
