@@ -4,6 +4,7 @@
 #include <linux/i2c.h>
 #include <linux/fs.h>
 #include <asm/uaccess.h>
+#include <linux/delay.h>
 
 #include "nunchuk.h"
 
@@ -23,6 +24,7 @@ static int nunchuk_open(struct inode *, struct file *);
 static int nunchuk_release(struct inode *, struct file *);
 
 /* GLOBALS */
+static char input[6];
 static int major_number;
 static int opened;
 static struct i2c_client* nunchuk_client;
@@ -38,9 +40,11 @@ static int nunchuk_handshake(void)
 	//pisi
 	char buffer[] = {0xF0, 0x55};	
 	i2c_master_send(nunchuk_client, buffer, 2);
+	udelay(1);
 	buffer[0] = 0xFB;
 	buffer[1] = 0x00;
 	i2c_master_send(nunchuk_client, buffer, 2);
+	udelay(1);	
     return RET_SUCCESS;
 }
 
@@ -124,6 +128,9 @@ static int nunchuk_release(struct inode *inode, struct file *file)
 static ssize_t nunchuk_read(struct file *filp, char *buffer, size_t length, 
                            loff_t * offset)
 {
+	
+	length = i2c_master_recv(nunchuk_client, input, 6);
+	put_user(input[0], buffer);	
     return length;
 }
 
