@@ -52,9 +52,10 @@ static int nunchuk_read_registers(struct i2c_client *client, u8 *buf,
 {
 	char sig = 0x00;
 	i2c_master_send(nunchuk_client, &sig, 1);
+	mdelay(10);
 	i2c_master_recv(nunchuk_client, buf, 6);
 	
-	udelay(100);
+	//udelay(100);
 
 	return RET_SUCCESS;
 }
