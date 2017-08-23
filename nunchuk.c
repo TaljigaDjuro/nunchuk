@@ -24,7 +24,6 @@ static int nunchuk_open(struct inode *, struct file *);
 static int nunchuk_release(struct inode *, struct file *);
 
 /* GLOBALS */
-static char input[6];
 static int major_number;
 static int opened;
 static struct i2c_client* nunchuk_client;
@@ -51,7 +50,10 @@ static int nunchuk_handshake(void)
 static int nunchuk_read_registers(struct i2c_client *client, u8 *buf,
 								  int buf_size)
 {
-	
+	char sig = 0x00;
+	i2c_master_send(nunchuk_client, &sig, 1);
+	udelay(1);
+	i2c_master_recv(nunchuk_client, buf, 6);
 	return RET_SUCCESS;
 }
 
@@ -128,12 +130,12 @@ static int nunchuk_release(struct inode *inode, struct file *file)
 static ssize_t nunchuk_read(struct file *filp, char *buffer, size_t length, 
                            loff_t * offset)
 {
-	char sig = 0x00;
-	i2c_master_send(nunchuk_client, &sig, 1);
-	udelay(1);
-	length = i2c_master_recv(nunchuk_client, input, 6);
-	put_user(input[0], buffer);	
-    return length;
+	
+	int i = 0;
+	char buf[6];
+	nunchuk_read_registers(nunchuk_client, buf, 6);
+	for(; i < 6; i++) put_user(buf[i], buffer++);
+    return i;
 }
 
 module_init(init_nunchuk_module);
