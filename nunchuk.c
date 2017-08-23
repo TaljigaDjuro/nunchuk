@@ -127,6 +127,8 @@ static int nunchuk_release(struct inode *inode, struct file *file)
     return RET_SUCCESS;
 }
 
+
+
 static ssize_t nunchuk_read(struct file *filp, char *buffer, size_t length, 
                            loff_t * offset)
 {
@@ -134,7 +136,12 @@ static ssize_t nunchuk_read(struct file *filp, char *buffer, size_t length,
 	int i = 0;
 	char buf[6];
 	nunchuk_read_registers(nunchuk_client, buf, 6);
-	for(; i < 6; i++) put_user(buf[i], buffer++);
+
+	for(; i < 6; i++) 
+	{	
+		printk(KERN_INFO "%d",  buf[i]);
+		put_user(buf[i], buffer++);
+}
     return i;
 }
 
