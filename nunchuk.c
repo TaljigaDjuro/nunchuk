@@ -135,10 +135,10 @@ static ssize_t nunchuk_read(struct file *filp, char *buffer, size_t length,
                            loff_t * offset)
 {
 	
-	int i = 0;
+	//int i = 0;
 	char buf[6];
-	nunchuk_read_registers(nunchuk_client, buf, 6);
 	char z,c;
+	nunchuk_read_registers(nunchuk_client, buf, 6);
 	z = c = buffer[5];
 	z = z & 1;
 	c = c & 2;
@@ -148,7 +148,7 @@ static ssize_t nunchuk_read(struct file *filp, char *buffer, size_t length,
 	put_user(buf[1], buffer++);
 	put_user(z, buffer++);
 	put_user(c, buffer++);
-    return i;
+    return 4;
 }
 
 module_init(init_nunchuk_module);
