@@ -140,7 +140,7 @@ static ssize_t nunchuk_read(struct file *filp, char *buffer, size_t length,
 	for(; i < 6; i++) 
 	{	
 		printk(KERN_INFO "%d",  buf[i]);
-		put_user(buf[i], buffer++);
+		//put_user(buf[i], buffer++);
 }
     return i;
 }
